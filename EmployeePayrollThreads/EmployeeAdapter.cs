@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EmployeePayrollThreads
 {
     public class EmployeeAdapter
     {
-        
+        /// Defining a function to add an employee object to 
+        /// the sql table
         public void AddEmployee(EmployeeModels employee)
         {
               string connectionString = "Server=(localdb)\\MSSQLLocalDB; Initial Catalog =payroll_service; User ID = AkSharma; Password=abhishek123";
@@ -36,6 +39,8 @@ namespace EmployeePayrollThreads
                 connection.Close();
             }
         }
+        /// Method to add the employee details from the list
+        /// to the table
         public void AddToEmployeePayroll(List<EmployeeModels> employeeList) {
             employeeList.ForEach(employee =>
             {
@@ -43,6 +48,17 @@ namespace EmployeePayrollThreads
                 Console.WriteLine(employee.EmployeeName + " added");
             }
             );
+        }
+        public void AddToEmployeePayroll_UsingThreads(List<EmployeeModels> employeeList) {
+            employeeList.ForEach(employeeData =>
+            {
+                Task thread = new Task(() =>
+            {
+                this.AddEmployee(employeeData);
+                Console.WriteLine(" Employee added: " + employeeData.EmployeeName);
+            });
+            thread.Start();
+        });
         }
     }
 }
