@@ -9,12 +9,14 @@ namespace MSTest
     [TestClass]
     public class UnitTest1
     {
+        private object locker = null;
         EmployeeAdapter adapter = null;
         List<EmployeeModels> employeeModels;
         [TestInitialize]
         public void SetUp() {
             adapter = new EmployeeAdapter();
             employeeModels = new List<EmployeeModels>();
+            locker = new object();
         }
         /// Adding a list of employees
         /// and adding each employee to the table
@@ -44,7 +46,24 @@ namespace MSTest
             stopwatch.Start();
             adapter.AddToEmployeePayroll_UsingThreads(employeeModels);
             stopwatch.Stop();
-            Console.WriteLine(stopwatch.ElapsedMilliseconds);
+            Console.WriteLine("Durarion "+stopwatch.ElapsedMilliseconds+" milliseconds");
+        }
+        [TestMethod]
+        public void EntersEmployeeObjectAddsToTheTable_Synchronised() {
+            employeeModels.Add(new EmployeeModels(12,"Prateek",'M',"Cuttack"));
+            employeeModels.Add(new EmployeeModels(13, "Freddie", 'M', "Venice"));
+            employeeModels.Add(new EmployeeModels(14, "Julia", 'F', "London"));
+            employeeModels.Add(new EmployeeModels(15, "Omar", 'M', "Muscat"));
+            //Using locker to lock a thread till its execution is over
+            //In order to implement synchronisation
+            lock (locker) {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                adapter.AddToEmployeePayroll_UsingThreads(employeeModels);
+                stopwatch.Stop();
+                Console.WriteLine("Duration "+stopwatch.ElapsedMilliseconds+" milliseconds");
+            }
+
         }
     }
 }
