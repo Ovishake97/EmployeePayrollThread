@@ -10,6 +10,7 @@ namespace EmployeePayrollThreads
 {
     public class EmployeeAdapter
     {
+        
         /// Defining a function to add an employee object to 
         /// the sql table
         public void AddEmployee(EmployeeModels employee)
@@ -49,16 +50,24 @@ namespace EmployeePayrollThreads
             }
             );
         }
+        /// Method to add employee details from the list
+        /// to the table with the help of separate threads
         public void AddToEmployeePayroll_UsingThreads(List<EmployeeModels> employeeList) {
-            employeeList.ForEach(employeeData =>
-            {
-                Task thread = new Task(() =>
-            {
-                this.AddEmployee(employeeData);
-                Console.WriteLine(" Employee added: " + employeeData.EmployeeName);
-            });
-            thread.Start();
-        });
-        }
+            
+                employeeList.ForEach(employeeData =>
+                {
+                    Thread thread = new Thread(() =>
+                    {
+                        Console.WriteLine(Thread.CurrentThread.ManagedThreadId+" starting");
+                        Console.WriteLine("Employee adding: "+employeeData.EmployeeName);
+                        this.AddEmployee(employeeData);
+                        Console.WriteLine(" Employee added: " + employeeData.EmployeeName);
+                        Console.WriteLine(Thread.CurrentThread.ManagedThreadId + " ended");
+                    });
+
+                    thread.Start();
+                    thread.Join();
+                });
+            }
     }
 }
