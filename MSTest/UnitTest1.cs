@@ -21,6 +21,7 @@ namespace MSTest
         /// Adding a list of employees
         /// and adding each employee to the table
         /// and printing out the duration of execution
+        /// UC1
         [TestMethod]
         public void EntersEmployeeAddsToTheTable()
         {
@@ -35,6 +36,9 @@ namespace MSTest
             DateTime stopTime = DateTime.Now;
             Console.WriteLine("Duration "+(stopTime-startTime));
         }
+        /// Adding employee to the list and adding each employee
+        /// with separate threads and printing out the time for execution
+        /// UC2
         [TestMethod]
         public void EntersEmployeeObjectAddsToTheTable_Threading() {
             employeeModels.Add(new EmployeeModels(7,"Amrit",'M',"Kolkata"));
@@ -48,6 +52,9 @@ namespace MSTest
             stopwatch.Stop();
             Console.WriteLine("Durarion "+stopwatch.ElapsedMilliseconds+" milliseconds");
         }
+        /// Adding a list of employees and then adding each employee to the database
+        /// by adopting to lock to implement synchronisation among the threads
+        /// UC3 and 4
         [TestMethod]
         public void EntersEmployeeObjectAddsToTheTable_Synchronised() {
             employeeModels.Add(new EmployeeModels(12,"Prateek",'M',"Cuttack"));
@@ -63,7 +70,25 @@ namespace MSTest
                 stopwatch.Stop();
                 Console.WriteLine("Duration "+stopwatch.ElapsedMilliseconds+" milliseconds");
             }
-
+        }
+        /// Adding a list of employee and salaries and adding both of these to two separate tables
+        /// using transaction, locker and threads
+        /// UC5
+        [TestMethod]
+        public void EntersEmployeeAndSalaryAddsToBothTheTable() {
+            List<EmployeeDetail> employeeDetails = new List<EmployeeDetail>();
+            List<SalaryModel> salaries = new List<SalaryModel>();
+            employeeDetails.Add(new EmployeeDetail(10,"Mukesh","M",151));
+            employeeDetails.Add(new EmployeeDetail(11, "Lalit", "M", 152));
+            employeeDetails.Add(new EmployeeDetail(12, "Poojitha", "F", 153));
+            salaries.Add(new SalaryModel(151,10000));
+            salaries.Add(new SalaryModel(152, 20000));
+            salaries.Add(new SalaryModel(153, 41000));
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            adapter.AddEmployeeAndSalary(employeeDetails, salaries);
+            stopwatch.Stop();
+            Console.WriteLine("Duration " + stopwatch.ElapsedMilliseconds + " milliseconds");
         }
     }
 }
